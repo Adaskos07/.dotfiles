@@ -1,0 +1,83 @@
+env:
+  TERM: xterm-256color
+
+window:
+  dimensions:
+    columns: 100
+    lines: 85
+
+  padding:
+    x: 0
+    y: 0
+
+dynamic_padding: false
+
+decorations: transparent
+
+scrolling:
+  history: 100000
+  multiplier: 1
+  auto_scroll: true
+
+tabspaces: 4
+
+font:
+  size: 15
+  normal:
+    family: JetBrainsMono Nerd Font Mono
+    #FiraCode Nerd Font Mono
+    #Monofur Nerd Font Mono
+    #TerminessTTF Nerd Font Mono
+    #MesloLGM Nerd Font Mono
+    #JetBrainsMono Nerd Font
+    #Meslo LG M for Powerline 
+    style: Regular
+  bold:
+    family: JetBrainsMono Nerd Font Mono
+    #Monofur Nerd Font Mono
+    #JetBrainsMono Nerd Font
+    style: Bold
+  italic:
+    family: JetBrainsMono Nerd Font
+    #ShureTechMono Nerd Font
+    #JetBrainsMono Nerd Font
+    style: Italic
+
+background_opacity: 0.99
+
+#Colors last wal read
+#0x0F0E0C'
+colors:
+  primary:
+    background: '0x0F1419'
+    foreground: '0xf5e1cd'
+
+  normal:
+    black:   '0x0F0E0C'
+    red:     '0xE98839'
+    green:   '0xED9754'
+    yellow:  '0xFCB074'
+    blue:    '0xDAAB83'
+    magenta: '0xFDBC87'
+    cyan:    '0xFDC594'
+    white:   '0xf5e1cd'
+
+  bright:
+    black:   '0xab9d8f'
+    red:     '0xE98839'
+    green:   '0xED9754'
+    yellow:  '0xFCB074'
+    blue:    '0xDAAB83'
+    magenta: '0xFDBC87'
+    cyan:    '0xFDC594'
+    white:   '0xf5e1cd'
+
+
+    
+key_bindings:
+  - { key: V, mods: Alt, action: Paste }
+  - { key: C, mods: Alt, action: Copy  }
+  - { key: K, mods: Shift|Alt, action: IncreaseFontSize }
+  - { key: J, mods: Shift|Alt, action: DecreaseFontSize }
+  - { key: K, mods: Alt, action: ScrollPageUp }
+  - { key: J, mods: Alt, action: ScrollPageDown }
