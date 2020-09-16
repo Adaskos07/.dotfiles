@@ -1,0 +1,32 @@
+{
+    "suggest.minTriggerInputLength": 3,
+    "python.jediEnabled": false,
+    "python.formatting.provider": "yapf",
+    "typescript.suggestionActions.enabled": false,
+    "typescript.validate.enable": false,
+	"clangd.semanticHighlighting": true,
+    "languageserver": {
+        "haskell": {
+            "command": "hie-wrapper",
+            "args": [
+                "--lsp"
+            ],
+            "rootPatterns": [
+                "*.cabal",
+                "stack.yaml",
+                "cabal.project",
+                "package.yaml"
+            ],
+            "filetypes": [
+                "hs",
+                "lhs",
+                "haskell"
+            ],
+            "initializationOptions": {
+                "haskell": {
+                    "formattingProvider": "brittany"
+                }
+            }
+        }
+    }
+}
