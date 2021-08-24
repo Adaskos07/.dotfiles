@@ -8,10 +8,10 @@
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
-	(package-install 'use-package))
+        (package-install 'use-package))
 (require 'use-package)
 
-	
+        
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-M-u") 'universal-argument)
 
@@ -25,7 +25,7 @@
                   circe-query-mode
                   sauron-mode
                   term-mode))
-  (add-to-list 'evil-emacs-state-modes mode)))
+   (add-to-list 'evil-emacs-state-modes mode)))
 
 (use-package undo-tree
   :diminish
@@ -174,6 +174,10 @@
                  '("xbm" "pbm" "pgm" "ppm" "pnm"
                    "png" "gif" "bmp" "tif" "jpeg"))
                 "sxiv"
+                '(file))
+          (list (openwith-make-extension-regexp
+                 '("pdf"))
+                "zathura"
                 '(file)))))
 
 (use-package parinfer-rust-mode
@@ -199,6 +203,21 @@
 (use-package eldoc
   :diminish eldoc-mode)
 
+(use-package vterm
+  :ensure t
+  :commands vterm
+  :config
+  (setq vterm-max-scrollback 10000))
+
+(use-package elfeed
+  :commands elfeed
+  :config
+  (setq elfeed-feed
+        '("https://lukesmith.xyz/rss.xml")))
+
+(use-package mpv)
+ 
+  
 ;; no emacs welcome screen
 (setq inhibit-startup-screen t)
 
@@ -231,14 +250,25 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(elfeed-feeds '("https://lukesmith.xyz/rss.xml"))
  '(package-selected-packages
-   '(orderless helpful marginalia vertico openwith dired-collapse all-the-icons-dired dired-single undo-tree use-package cider clojure-mode magit gruber-darker-theme)))
-(custom-set-faces
+   '(mpv elfeed vterm orderless helpful marginalia vertico openwith dired-collapse all-the-icons-dired dired-single undo-tree use-package cider clojure-mode magit gruber-darker-theme)))
+(custom-set-faces)
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ 
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ 
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ 
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
