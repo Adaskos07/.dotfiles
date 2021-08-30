@@ -203,6 +203,28 @@
 (use-package eldoc
   :diminish eldoc-mode)
 
+(defun as/org-mode-setup ()
+  (display-line-numbers-mode -1)
+  ;; (org-indent-mode)
+  (electric-indent-mode 0)
+  (auto-fill-mode 0)
+  (setq evil-auto-indent nil)
+  (diminish org-indent-mode))
+
+
+(use-package org
+  :defer t
+  :hook (org-mode . as/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▾")
+  (set-face-underline 'org-ellipsis nil)
+  (setq org-modules
+        '(org-crypt
+          org-habit
+          org-bookmark
+          org-eshell
+          org-irc)))
+ 
 (use-package vterm
   :ensure t
   :commands vterm
@@ -212,12 +234,13 @@
 (use-package elfeed
   :commands elfeed
   :config
-  (setq elfeed-feed
-        '("https://lukesmith.xyz/rss.xml")))
-
+  (setq elfeed-feeds
+    '("https://lukesmith.xyz/rss.xml"
+      "https://lukesmith.xyz/videos"
+      "https://hnrss.org/frontpage")))
+          
 (use-package mpv)
  
-  
 ;; no emacs welcome screen
 (setq inhibit-startup-screen t)
 
@@ -235,11 +258,22 @@
 
 ;; change font
 (set-face-attribute 'default nil
-                    :family "JetBrainsMonoMedium Nerd Font"
-                    :height 130)
+      :family "JetBrainsMonoMedium Nerd Font"
+      ;; :font "Iosevka Aile"
+      :height 120)
+
+(set-face-attribute 'fixed-pitch nil
+                    :font "JetBrainsMonoMedium Nerd Font")
+
+(set-face-attribute 'variable-pitch nil
+                    :font "Linux Libertine")
+
+
+(use-package doom-themes
+  :defer t)
 
 ;; t prevents prompt on entry
-(load-theme 'gruber-darker t)
+(load-theme 'doom-solarized-light t)
 
 ;; defauly encoding
 (set-default-coding-systems 'utf-8)
@@ -250,30 +284,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(elfeed-feeds '("https://lukesmith.xyz/rss.xml"))
  '(package-selected-packages
-   '(mpv elfeed vterm orderless helpful marginalia vertico openwith dired-collapse all-the-icons-dired dired-single undo-tree use-package cider clojure-mode magit gruber-darker-theme)))
+   '(doom-themes elfeed mpv vterm orderless helpful marginalia vertico openwith dired-collapse all-the-icons-dired dired-single undo-tree use-package cider clojure-mode magit gruber-darker-theme)))
 (custom-set-faces)
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- 
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- 
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- 
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- 
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
