@@ -238,7 +238,7 @@
   (setq elfeed-feeds
     '(("https://lukesmith.xyz/rss.xml" primary blog)
       ("https://lukesmith.xyz/videos" primary videos)
-      "https://hnrss.org/frontpage" secondary)))
+      ("https://hnrss.org/frontpage" secondary))))
       
 (defun elfeed-v-mpv (url)
  "Watch a video from URL in MPV" 
