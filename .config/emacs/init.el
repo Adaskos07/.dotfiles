@@ -172,7 +172,7 @@
                 '(file))
           (list (openwith-make-extension-regexp
                  '("xbm" "pbm" "pgm" "ppm" "pnm"
-                   "png" "gif" "bmp" "tif" "jpeg"))
+                   "png" "gif" "bmp" "tif" "jpeg" "jpg"))
                 "sxiv"
                 '(file))
           (list (openwith-make-extension-regexp
@@ -211,7 +211,6 @@
   (setq evil-auto-indent nil)
   (diminish org-indent-mode))
 
-
 (use-package org
   :defer t
   :hook (org-mode . as/org-mode-setup)
@@ -234,13 +233,29 @@
 (use-package elfeed
   :commands elfeed
   :config
+  (as/leader-key-def
+    "v" 'elfeed-view-mpv)
   (setq elfeed-feeds
-    '("https://lukesmith.xyz/rss.xml"
-      "https://lukesmith.xyz/videos"
-      "https://hnrss.org/frontpage")))
-          
+    '(("https://lukesmith.xyz/rss.xml" primary blog)
+      ("https://lukesmith.xyz/videos" primary videos)
+      "https://hnrss.org/frontpage" secondary)))
+      
+(defun elfeed-v-mpv (url)
+ "Watch a video from URL in MPV" 
+ (async-shell-command (format "mpv '%s'" url)))
+
+(defun elfeed-view-mpv (&optional use-generic-p)
+  "Youtube-feed link"
+  (interactive "P")
+  (let ((entries (elfeed-search-selected)))
+    (cl-loop for entry in entries
+     do (elfeed-untag entry 'unread)
+     when (elfeed-entry-link entry) 
+     do (elfeed-v-mpv it)) 
+   (mapc #'elfeed-search-update-entry entries) 
+   (unless (use-region-p) (forward-line)))) 
+
 (use-package mpv)
- 
 ;; no emacs welcome screen
 (setq inhibit-startup-screen t)
 
@@ -259,21 +274,22 @@
 ;; change font
 (set-face-attribute 'default nil
       :family "JetBrainsMonoMedium Nerd Font"
-      ;; :font "Iosevka Aile"
-      :height 120)
+      :height 117)
 
 (set-face-attribute 'fixed-pitch nil
                     :font "JetBrainsMonoMedium Nerd Font")
 
 (set-face-attribute 'variable-pitch nil
-                    :font "Linux Libertine")
+                    :font "Linux Libertine"
+                    :height 150)
 
+;; make steps for font changes smaller
+(setq text-scale-mode-step 1.05)
 
 (use-package doom-themes
   :defer t)
-
 ;; t prevents prompt on entry
-(load-theme 'doom-solarized-light t)
+(load-theme 'doom-gruvbox t)
 
 ;; defauly encoding
 (set-default-coding-systems 'utf-8)
