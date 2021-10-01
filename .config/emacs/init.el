@@ -11,9 +11,60 @@
         (package-install 'use-package))
 (require 'use-package)
 
-        
+;; defauly encoding
+(set-default-coding-systems 'utf-8)
+
+;; Set default connection mode to SSH
+(setq tramp-default-method "ssh")
+
+;; no emacs welcome screen
+(setq inhibit-startup-screen t)
+
+;; disable toolbars and scrollbars
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+(scroll-bar-mode 0)
+
+;; relative numbers
+(global-display-line-numbers-mode 1)
+(setq display-line-numbers-type 'relative)
+
+;; use spaces instead of tabs for indentation
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+
+;; change font
+(set-face-attribute 'default nil
+      :family "JetBrainsMonoMedium Nerd Font"
+      :height 117)
+
+(set-face-attribute 'fixed-pitch nil
+                    :font "JetBrainsMonoMedium Nerd Font")
+
+(set-face-attribute 'variable-pitch nil
+                    :font "Linux Biolinum"
+                    ;; :font "Linux Libertine O"
+                    ;; :font "Caladea"
+                    :height 165)
+
+;; make steps for font changes smaller
+(setq text-scale-mode-step 1.05)
+
+(use-package doom-themes
+  :defer t)
+;; t prevents prompt on entry
+(load-theme 'doom-gruvbox-light t)
+;; (load-theme 'doom-henna t)
+;; (load-theme 'doom-dracula t)
+
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-M-u") 'universal-argument)
+
+(use-package ws-butler
+  :defer t
+  :diminish
+  :hook ((text-mode . ws-butler-mode)
+         (prog-mode . ws-butler-mode)))
 
 (defun as/evil-hook ()
   (dolist (mode '(custom-mode
@@ -49,7 +100,8 @@
   ;; (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   ;; (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
+  (evil-set-initial-state 'dashboard-mode 'normal)
+  (setq-default evil-shift-width tab-width))
 
 (use-package evil-collection
   :ensure t
@@ -63,6 +115,21 @@
         (remove 'lispy evil-collection-mode-list))
   (evil-collection-init)
   :diminish evil-collection-unimpaired-mode)
+
+(use-package general
+  :ensure t
+  :config
+  (general-evil-setup t)
+  (general-create-definer as/leader-key-def
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
+  (general-create-definer as/ctrl-c-keys
+    :prefix "C-c"))
+
+(use-package evil-nerd-commenter
+  :ensure t
+  :bind ("M-/" . evilnc-comment-or-uncomment-lines))
 
 (use-package which-key
   :ensure t
@@ -94,7 +161,7 @@
   (setq completion-styles '(orderless)
         completion-category-defaults nil
         completion-category-overrides '((file) (styles . partial-completions))))
- 
+
 (use-package marginalia
   :ensure t
   :after vertico
@@ -112,16 +179,8 @@
   ([remap describe-command] . helpful-command)
   ([remap describe-key] . helpful-key))
 
-(use-package general
-  :ensure t
-  :config
-  (general-evil-setup t)
-  (general-create-definer as/leader-key-def
-    :keymaps '(normal insert visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-SPC")
-  (general-create-definer as/ctrl-c-keys
-    :prefix "C-c"))
+(use-package eldoc
+  :diminish eldoc-mode)
  
 (use-package all-the-icons)
 (use-package all-the-icons-dired
@@ -186,10 +245,99 @@
   :hook emacs-lisp-mode
   (setq parinfer-rust-auto-download t))
 
+(use-package projectile
+  :ensure t
+  :defer t
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :demand t)
+
+(as/leader-key-def
+  "pf" 'projectile-find-file
+  "pp" 'projectile-find-file
+  "pd" 'projectile-dired
+  "pc" 'projectile-compile-project
+  "ps" 'projectile-switch-project)
+  
 (use-package magit
+  :defer t
   :commands (magit-status magit-get-current-branch))
 
+(use-package magit-todos
+  :defer t)
+
+(as/leader-key-def
+  "g"   '(:ignore t :which-key "git")
+  "gs"  'magit-status
+  "gd"  'magit-diff-unstaged
+  "gc"  'magit-branch-or-checkout
+  "gl"   '(:ignore t :which-key "log")
+  "glc" 'magit-log-current
+  "glf" 'magit-log-buffer-file
+  "gb"  'magit-branch
+  "gP"  'magit-push-current
+  "gp"  'magit-pull-branch
+  "gf"  'magit-fetch
+  "gF"  'magit-fetch-all
+  "gr"  'magit-rebase)
+
+(use-package flycheck
+  :defer t
+  :diminish
+  :hook ((python-mode . flycheck-mode)
+         (emacs-lisp-mode . flycheck-mode)))
+
 (use-package diminish)
+
+;; (use-package lsp-mode
+;;   :ensure t
+;;   ;; :straight t
+;;   :commands lsp
+;;   ;; :bind (:map lsp-mode-map
+;;   ;;         ("C-n" . completion-at-point))
+;;   :hook (python-mode . lsp)
+;;   :custom (lsp-headerline-breadcrumb-enable nil)
+;;   :config
+;;   (evil-collection-define-key 'insert 'lsp-mode-map
+;;     (kbd "C-n") 'company-complete))
+
+;; (use-package lsp-ui
+;;   :ensure t
+;;   :hook (lsp-mode . lsp-ui-mode)
+;;   :config
+;;   (setq lsp-ui-sideline-enable t)
+;;   (setq lsp-ui-sideline-show-hover nil)
+;;   (setq lsp-ui-doc-enable nil))
+
+(use-package company
+  :ensure t
+  :hook (prog-mode . company-mode)
+  :config
+  (setq company-minimum-prefix-length 2)
+  (setq company-selection-wrap-length 1)
+  (setq company-selection-wrap-around 1)
+  (setq company-idle-delay nil)
+  (evil-collection-define-key 'insert 'company-mode-map
+    (kbd "C-n") 'company-complete))
+
+;; (as/leader-key-def
+;;   "l" '(:ignore t :which-key "lsp")
+;;   "ld" 'xref-find-definitions
+;;   "lr" 'xref-find-references
+;;   "ln" 'lsp-ui-find-next-reference
+;;   "lp" 'lsp-ui-find-prev-reference
+;;   "le" 'lsp-ui-flycheck-list
+;;   "lS" 'lsp-ui-sideline-mode
+;;   "lX" 'lsp-execute-code-action)
+
+(use-package markdown-mode
+  :ensure t)
+
+;; Emacs Lisp
+
+;; Clojure
+(use-package clojure-mode
+  :ensure t)
 
 ;; cider settings
 (use-package cider
@@ -200,12 +348,20 @@
   :config
   (evil-collection-cider-setup))
 
-(use-package eldoc
-  :diminish eldoc-mode)
+;; Python
+(use-package python-mode
+  :ensure nil
+  :custom
+  (setq python-shell-interpreter "/usr/bin/python3"))
+
+(use-package pyvenv
+  :ensure t
+  :config
+  (pyvenv-mode 1))
 
 (defun as/org-mode-setup ()
   (display-line-numbers-mode -1)
-  ;; (org-indent-mode)
+  (org-indent-mode 0)
   (electric-indent-mode 0)
   (auto-fill-mode 0)
   (setq evil-auto-indent nil)
@@ -216,84 +372,53 @@
   :hook (org-mode . as/org-mode-setup)
   :config
   (setq org-ellipsis " ▾")
-  (set-face-underline 'org-ellipsis nil)
-  (setq org-modules
-        '(org-crypt
-          org-habit
-          org-bookmark
-          org-eshell
-          org-irc)))
+  (set-face-underline 'org-ellipsis nil))
+  ;; (setq org-modules
+  ;;       '(org-crypt
+  ;;         org-habit
+  ;;         org-bookmark
+  ;;         org-eshell
+  ;;         org-irc)))
  
 (use-package vterm
   :ensure t
   :commands vterm
+  :hook (vterm-mode . (lambda () (display-line-numbers-mode -1)))
   :config
   (setq vterm-max-scrollback 10000))
 
 (use-package elfeed
   :commands elfeed
+  :hook (elfeed-show-mode . (lambda () (display-line-numbers-mode -1)))
   :config
-  (as/leader-key-def
-    "v" 'elfeed-view-mpv)
-  (setq elfeed-feeds
-    '(("https://lukesmith.xyz/rss.xml" primary blog)
-      ("https://lukesmith.xyz/videos" primary videos)
-      ("https://hnrss.org/frontpage" secondary))))
-      
+  (evil-collection-define-key 'normal 'elfeed-search-mode-map
+    (kbd "v") 'elfeed-view-mpv)
+  (evil-collection-define-key 'normal 'elfeed-search-mode-map
+    (kbd "r") 'elfeed-update))
+
+(use-package elfeed-org
+  :ensure t
+  :after elfeed
+  :config
+  (setq rmh-elfeed-org-files (list "~/.config/feeds/rss.org"))
+  (elfeed-org))
+
 (defun elfeed-v-mpv (url)
- "Watch a video from URL in MPV" 
+ "Watch a video from URL in MPV."
  (async-shell-command (format "mpv '%s'" url)))
 
 (defun elfeed-view-mpv (&optional use-generic-p)
-  "Youtube-feed link"
+  "Youtube-feed link."
   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
      do (elfeed-untag entry 'unread)
-     when (elfeed-entry-link entry) 
+     when (elfeed-entry-link entry)
      do (elfeed-v-mpv it)) 
    (mapc #'elfeed-search-update-entry entries) 
    (unless (use-region-p) (forward-line)))) 
 
 (use-package mpv)
-;; no emacs welcome screen
-(setq inhibit-startup-screen t)
-
-;; disable toolbars and scrollbars
-(menu-bar-mode 0)
-(tool-bar-mode 0)
-(scroll-bar-mode 0)
-
-;; relative numbers
-(global-display-line-numbers-mode 1)
-(setq display-line-numbers-type 'relative)
-
-;; use spaces instead of tabs for indentation
-(setq-default indent-tabs-mode)
-
-;; change font
-(set-face-attribute 'default nil
-      :family "JetBrainsMonoMedium Nerd Font"
-      :height 117)
-
-(set-face-attribute 'fixed-pitch nil
-                    :font "JetBrainsMonoMedium Nerd Font")
-
-(set-face-attribute 'variable-pitch nil
-                    :font "Linux Libertine"
-                    :height 150)
-
-;; make steps for font changes smaller
-(setq text-scale-mode-step 1.05)
-
-(use-package doom-themes
-  :defer t)
-;; t prevents prompt on entry
-(load-theme 'doom-gruvbox t)
-
-;; defauly encoding
-(set-default-coding-systems 'utf-8)
-
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -301,9 +426,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(doom-themes elfeed mpv vterm orderless helpful marginalia vertico openwith dired-collapse all-the-icons-dired dired-single undo-tree use-package cider clojure-mode magit gruber-darker-theme)))
+   '(ws-butler flycheck magit-todos pyvenv which-key vterm vertico use-package undo-tree swiper python-mode projectile parinfer-rust-mode orderless openwith mpv marginalia magit lsp-ui helpful gruber-darker-theme general evil-nerd-commenter evil-collection elfeed-org doom-themes dired-single dired-collapse diminish company cider all-the-icons-dired)))
 (custom-set-faces)
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
